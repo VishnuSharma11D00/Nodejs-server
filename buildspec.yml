@@ -4,7 +4,7 @@ phases:
   install:
     commands:
       - echo Installing jq...
-      - apt-get update && apt-get install -y jq
+      - yum install -y jq
 
   pre_build:
     commands:
