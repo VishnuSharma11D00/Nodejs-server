@@ -1,6 +1,13 @@
 version: 0.2
 
 phases:
+  install:
+    runtime-versions:
+      docker: 20
+    commands:
+      - echo Installing jq...
+      - apt-get update && apt-get install -y jq
+
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
@@ -21,7 +28,7 @@ phases:
       - echo Pushing the Docker images...
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Writing image definitions file...
-      - printf '[{"name":"%s","imageUri":"%s"}]' "$CONTAINER_NAMES" "$REPOSITORY_URI:$IMAGE_TAG" > imagedefinitions.json
+      - jq -n --arg name "$CONTAINER_NAMES" --arg imageUri "$REPOSITORY_URI:$IMAGE_TAG" '[{"name":$name,"imageUri":$imageUri}]' > imagedefinitions.json
 
 artifacts:
   files:
